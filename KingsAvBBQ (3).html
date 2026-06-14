@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kings Avenue BBQ 🔥</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #FFF8F4;
+      color: #2C2C2C;
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #FF6B2B 0%, #FF9A5C 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "🔥";
+      font-size: 120px;
+      position: absolute;
+      top: -20px; right: -10px;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .hero .subtitle {
+      margin-top: 10px;
+      color: rgba(255,255,255,0.88);
+      font-size: 1rem;
+    }
+
+    .event-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .event-details .pill {
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .counter-banner {
+      background: #fff;
+      border-bottom: 2px solid #FFD9C4;
+      padding: 14px 24px;
+      text-align: center;
+    }
+
+    .counter-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .counter-text { font-size: 0.95rem; color: #555; }
+    .counter-text strong { color: #FF6B2B; font-size: 1.1rem; }
+
+    .progress-bar {
+      width: 200px;
+      height: 10px;
+      background: #FFE5D6;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF6B2B, #FF9A5C);
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+
+    .all-done {
+      background: #E2F4EA;
+      color: #1E7C3F;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 99px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 16px 60px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FF6B2B;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: #FFD9C4;
+      border-radius: 2px;
+    }
+
+    .form-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 16px rgba(255,107,43,0.10);
+      margin-bottom: 40px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select, textarea {
+      border: 2px solid #EEE;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #2C2C2C;
+      background: #FAFAFA;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #FF6B2B;
+      background: #fff;
+    }
+
+    textarea { resize: vertical; min-height: 70px; }
+
+    .btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: linear-gradient(135deg, #FF6B2B, #FF9A5C);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .needs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .need-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .need-card .emoji { font-size: 1.4rem; }
+    .need-card .info { flex: 1; }
+    .need-card .cat-name { font-size: 0.85rem; font-weight: 700; color: #2C2C2C; }
+    .need-card .cat-status { font-size: 0.75rem; color: #888; margin-top: 2px; }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 99px;
+    }
+    .badge.needed { background: #FFE5D6; color: #D94F00; }
+    .badge.covered { background: #E2F4EA; color: #1E7C3F; }
+
+    .table-wrap {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(255,107,43,0.08);
+      margin-bottom: 40px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+    thead th {
+      background: #FF6B2B;
+      color: #fff;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr { border-bottom: 1px solid #F0F0F0; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FFF8F4; }
+    tbody td { padding: 12px 16px; vertical-align: middle; }
+
+    .cat-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: #FFE5D6;
+      color: #C44A00;
+      font-weight: 600;
+    }
+
+    .attending-yes   { color: #1E7C3F; font-weight: 700; }
+    .attending-maybe { color: #B07D00; font-weight: 700; }
+    .attending-no    { color: #999;    font-weight: 700; }
+    .pending-cell    { color: #CCC; font-style: italic; }
+
+    .footer {
+      text-align: center;
+      color: #AAA;
+      font-size: 0.8rem;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 540px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      .progress-bar { width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>Kings Avenue BBQ 🔥</h1>
+    <p class="subtitle">Let's eat together — sign up below so we know what's coming!</p>
+    <div class="event-details">
+      <span class="pill">📅 Sunday 5th July</span>
+      <span class="pill">📍 Kings Avenue Court Yard</span>
+      <span class="pill">🕑 1:00pm</span>
+    </div>
+  </div>
+
+  <div class="counter-banner">
+    <div class="counter-inner">
+      <div class="counter-text"><strong id="counter-num">0</strong> of 13 flats have signed up</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="all-done" id="all-done">🎉 Everyone's in!</div>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <p class="section-title">✍️ Sign Me Up</p>
+    <div class="form-card">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="name">Your flat</label>
+          <select id="name">
+            <option value="">— select your flat —</option>
+            <option>219 Flat 1</option>
+            <option>219 Flat 2</option>
+            <option>219 Flat 3</option>
+            <option>221 Flat 1</option>
+            <option>221 Flat 2</option>
+            <option>221 Flat 3</option>
+            <option>221 Flat 4</option>
+            <option>223 Flat 1</option>
+            <option>223 Flat 2</option>
+            <option>225 Flat 1</option>
+            <option>225 Flat 2</option>
+            <option>225 Flat 3</option>
+            <option>225 Flat 4</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="attending">Attending?</label>
+          <select id="attending">
+            <option value="">— select —</option>
+            <option>Yes ✅</option>
+            <option>Maybe ❓</option>
+            <option>Can't make it ❌</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="guests">Extra guests</label>
+          <input type="number" id="guests" min="0" placeholder="0" />
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">— select —</option>
+            <option>🥩 Meat / Mains</option>
+            <option>🥗 Salads &amp; Sides</option>
+            <option>🍞 Bread &amp; Wraps</option>
+            <option>🧀 Starters &amp; Snacks</option>
+            <option>🍰 Desserts</option>
+            <option>🧊 Ice</option>
+            <option>🥤 Drinks</option>
+            <option>🧴 Condiments</option>
+            <option>🍽️ Equipment</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label for="dish">What are you bringing?</label>
+          <input type="text" id="dish" placeholder="e.g. Homemade beef burgers (x12)" />
+        </div>
+
+        <div class="form-group">
+          <label for="serves">Serves approx.</label>
+          <input type="number" id="serves" min="1" placeholder="e.g. 8" />
+        </div>
+
+        <div class="form-group">
+          <label for="dietary">Dietary notes</label>
+          <input type="text" id="dietary" placeholder="e.g. Gluten free, vegan..." />
+        </div>
+
+        <div class="form-group full">
+          <label for="comments">Any comments?</label>
+          <textarea id="comments" placeholder="Anything else we should know?"></textarea>
+        </div>
+
+      </div>
+      <button class="btn" id="submit-btn" onclick="handleSubmit()">Add my contribution 🙌</button>
+    </div>
+
+    <p class="section-title">📋 What's Still Needed</p>
+    <div class="needs-grid" id="needs-grid"></div>
+
+    <p class="section-title">👀 Who's Signed Up</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Flat</th>
+            <th>Attending</th>
+            <th>Category</th>
+            <th>Bringing</th>
+            <th>Serves</th>
+            <th>Dietary</th>
+          </tr>
+        </thead>
+        <tbody id="signup-table"></tbody>
+      </table>
+    </div>
+
+    <div class="footer">Kings Avenue Court Yard 🏘️ · Sunday 5th July · 1pm</div>
+
+  </div>
+
+  <script>
+    const TOTAL_FLATS = 13;
+    const ALL_FLATS = [
+      "219 Flat 1","219 Flat 2","219 Flat 3",
+      "221 Flat 1","221 Flat 2","221 Flat 3","221 Flat 4",
+      "223 Flat 1","223 Flat 2",
+      "225 Flat 1","225 Flat 2","225 Flat 3","225 Flat 4"
+    ];
+
+    const ALL_CATS = [
+      { emoji:"🥩", name:"Meat / Mains" },
+      { emoji:"🥗", name:"Salads & Sides" },
+      { emoji:"🍞", name:"Bread & Wraps" },
+      { emoji:"🧀", name:"Starters & Snacks" },
+      { emoji:"🍰", name:"Desserts" },
+      { emoji:"🧊", name:"Ice" },
+      { emoji:"🥤", name:"Drinks" },
+      { emoji:"🧴", name:"Condiments" },
+      { emoji:"🍽️", name:"Equipment" },
+    ];
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzvi0ylp6w1IG4OEYSiZmXn3jNz71lv06mJgf0gZa7Mh3x7TY4WfR-qW9oPmPMKPhtEQ/exec";
+
+    let signups = ALL_FLATS.map(flat => ({
+      name: flat, attending: "", guests: 0,
+      category: "", dish: "", serves: "", dietary: "", pending: true
+    }));
+
+    function renderCounter() {
+      const responded = signups.filter(s => !s.pending).length;
+      document.getElementById("counter-num").textContent = responded;
+      document.getElementById("progress-fill").style.width = `${(responded / TOTAL_FLATS) * 100}%`;
+      document.getElementById("all-done").style.display = responded === TOTAL_FLATS ? "inline-block" : "none";
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("signup-table");
+      tbody.innerHTML = signups.map(s => {
+        if (s.pending) {
+          return `<tr>
+            <td><strong>${s.name}</strong></td>
+            <td class="pending-cell" colspan="5">Hasn't signed up yet...</td>
+          </tr>`;
+        }
+        const attClass = s.attending.includes("Yes") ? "attending-yes"
+                       : s.attending.includes("Can't") ? "attending-no"
+                       : "attending-maybe";
+        return `<tr>
+          <td><strong>${s.name}</strong></td>
+          <td class="${attClass}">${s.attending}</td>
+          <td><span class="cat-tag">${s.category || "—"}</span></td>
+          <td>${s.dish || "—"}</td>
+          <td>${s.serves || "—"}</td>
+          <td>${s.dietary || "—"}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function renderNeeds() {
+      const coveredCats = signups.filter(s => !s.pending).map(s => s.category);
+      const grid = document.getElementById("needs-grid");
+      grid.innerHTML = ALL_CATS.map(cat => {
+        const fullName = `${cat.emoji} ${cat.name}`;
+        const covered = coveredCats.includes(fullName);
+        return `<div class="need-card">
+          <span class="emoji">${cat.emoji}</span>
+          <div class="info">
+            <div class="cat-name">${cat.name}</div>
+            <div class="cat-status">${covered ? "Someone's on it" : "Not yet claimed"}</div>
+          </div>
+          <span class="badge ${covered ? "covered" : "needed"}">${covered ? "✓" : "Needed"}</span>
+        </div>`;
+      }).join("");
+    }
+
+    function handleSubmit() {
+      const name     = document.getElementById("name").value;
+      const attending= document.getElementById("attending").value;
+      const guests   = parseInt(document.getElementById("guests").value) || 0;
+      const category = document.getElementById("category").value;
+      const dish     = document.getElementById("dish").value.trim();
+      const serves   = parseInt(document.getElementById("serves").value) || 0;
+      const dietary  = document.getElementById("dietary").value.trim();
+      const comments = document.getElementById("comments").value.trim();
+
+      if (!name || !attending) {
+        alert("Please select your flat and whether you're attending!");
+        return;
+      }
+
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Saving... ⏳";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, attending, guests, category, dish, serves, dietary, comments })
+      })
+      .then(() => {
+        const idx = signups.findIndex(s => s.name === name);
+        if (idx !== -1) {
+          signups[idx] = { name, attending, guests, category, dish, serves, dietary, pending: false };
+        }
+        renderTable();
+        renderNeeds();
+        renderCounter();
+
+        ["guests","dish","serves","dietary","comments"].forEach(id =>
+          document.getElementById(id).value = "");
+        document.getElementById("name").value = "";
+        document.getElementById("attending").value = "";
+        document.getElementById("category").value = "";
+
+        btn.disabled = false;
+        btn.textContent = "Add my contribution 🙌";
+        alert(`Thanks ${name}! You're on the list 🎉`);
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Add my contribution 🙌";
+        alert("Something went wrong — please try again!");
+      });
+    }
+
+    renderTable();
+    renderNeeds();
+    renderCounter();
+  </script>
+</body>
+</html>
